@@ -1,4 +1,4 @@
-package com.elhady.kotlin.api
+package com.elhady.kotlin.data.api
 
 class ApiHelper(private val apiService: ApiService) {
 

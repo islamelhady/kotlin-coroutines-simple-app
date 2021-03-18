@@ -1,6 +1,6 @@
-package com.elhady.kotlin.api
+package com.elhady.kotlin.data.api
 
-import com.elhady.kotlin.model.Post
+import com.elhady.kotlin.data.model.Post
 import retrofit2.http.GET
 
 interface ApiService {

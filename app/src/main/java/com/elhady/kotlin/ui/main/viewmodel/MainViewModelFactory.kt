@@ -1,8 +1,8 @@
-package com.elhady.kotlin.viewmodel
+package com.elhady.kotlin.ui.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.elhady.kotlin.repository.Repository
+import com.elhady.kotlin.data.repository.Repository
 
 
 class MainViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {

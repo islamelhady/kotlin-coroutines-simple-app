@@ -1,4 +1,4 @@
-package com.elhady.kotlin.api
+package com.elhady.kotlin.data.api
 
 import com.elhady.kotlin.util.BASE_URL
 import retrofit2.Retrofit

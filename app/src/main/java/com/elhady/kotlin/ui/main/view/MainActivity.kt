@@ -1,4 +1,4 @@
-package com.elhady.kotlin
+package com.elhady.kotlin.ui.main.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -6,9 +6,9 @@ import android.util.Log
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.elhady.kotlin.repository.Repository
-import com.elhady.kotlin.viewmodel.MainViewModel
-import com.elhady.kotlin.viewmodel.MainViewModelFactory
+import com.elhady.kotlin.R
+import com.elhady.kotlin.data.repository.Repository
+import com.elhady.kotlin.ui.main.viewmodel.MainViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 

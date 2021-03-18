@@ -1,4 +1,4 @@
-package com.elhady.kotlin.model
+package com.elhady.kotlin.data.model
 
 data class Post(
     var userId: Int,
