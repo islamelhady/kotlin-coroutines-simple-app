@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elhady.kotlin.R
 import com.elhady.kotlin.data.model.Post
+import kotlinx.android.synthetic.main.item_layout.view.*
 
 class MainAdapter(private val posts: ArrayList<Post>) :
     RecyclerView.Adapter<MainAdapter.PostViewHolder>() {
@@ -16,8 +17,7 @@ class MainAdapter(private val posts: ArrayList<Post>) :
             itemView.apply {
                 textViewTitle.text = posts.title
                 textViewBody.text = posts.body
-                userId.text = posts.userId
-
+                userId.text = posts.userId.toString()
             }
         }
     }

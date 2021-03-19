@@ -1,50 +1,85 @@
 package com.elhady.kotlin.ui.main.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Adapter
-import android.widget.TextView
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elhady.kotlin.R
-import com.elhady.kotlin.data.repository.MainRepository
+import com.elhady.kotlin.data.api.ApiHelper
+import com.elhady.kotlin.data.api.RetrofitBuilder
+import com.elhady.kotlin.data.model.Post
+import com.elhady.kotlin.ui.base.ViewModelFactory
+import com.elhady.kotlin.ui.main.adapter.MainAdapter
 import com.elhady.kotlin.ui.main.viewmodel.MainViewModel
+import com.elhady.kotlin.util.Status
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewModelvat
+    private lateinit var viewModel: MainViewModel
+    private lateinit var adapter: MainAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val repository = MainRepository()
-        val viewModelFactory = MainViewModel(repository)
-        viewModel = ViewModelProvider(this,viewModelFactory).get(MainViewModel::class.java)
-        viewModel.getPosts()
 
-        observeData()
-
+        setupViewModel()
+        setupUI()
+        setupObservers()
 
 
     }
 
-    private fun observeData() {
-        var textView : TextView = findViewById(R.id.textView)
-        viewModel.getPostList().observe(this, Observer { response ->
-            if (response.isSuccessful) {
-                // ? after the type to indicate that a variable can be null
-                Log.d("Response", response.body()?.userId.toString())
-                Log.d("Response", response.body()?.id.toString())
-                textView.text = response.body()?.toString()
-                Log.d("Response", response.body()?.title!!)
-                Log.d("Response", response.body()?.body!!)
-            } else {
-                Log.d("Response", response.errorBody().toString())
-                textView.text = response.code().toString()
+    private fun setupViewModel() {
+        viewModel =
+            ViewModelProviders.of(this, ViewModelFactory(ApiHelper(RetrofitBuilder.apiService)))
+                .get(MainViewModel::class.java)
+    }
+
+    private fun setupUI() {
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = MainAdapter(arrayListOf())
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                recyclerView.context,
+                (recyclerView.layoutManager as LinearLayoutManager).orientation
+            )
+        )
+        recyclerView.adapter = adapter
+    }
+
+    private fun setupObservers() {
+        viewModel.getPosts().observe(this, Observer {
+            it?.let { resource ->
+                when (resource.status) {
+                    Status.SUCCESS -> {
+                        recyclerView.visibility = View.VISIBLE
+                        progressBar.visibility = View.GONE
+                        resource.data?.let { posts -> retrieveList(posts) }
+                    }
+                    Status.ERROR -> {
+                        recyclerView.visibility = View.VISIBLE
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                    }
+                    Status.LOADING -> {
+                        progressBar.visibility = View.VISIBLE
+                        recyclerView.visibility = View.GONE
+                    }
+                }
             }
         })
+    }
 
+    private fun retrieveList(post: List<Post>) {
+        adapter.apply {
+            addUsers(post)
+            notifyDataSetChanged()
+        }
     }
 }
