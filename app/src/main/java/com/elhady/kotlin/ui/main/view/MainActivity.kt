@@ -7,8 +7,8 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.elhady.kotlin.R
-import com.elhady.kotlin.data.repository.Repository
-import com.elhady.kotlin.ui.main.viewmodel.MainViewModelFactory
+import com.elhady.kotlin.data.repository.MainRepository
+import com.elhady.kotlin.ui.main.viewmodel.MainViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,8 +18,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val repository = Repository()
-        val viewModelFactory = MainViewModelFactory(repository)
+        val repository = MainRepository()
+        val viewModelFactory = MainViewModel(repository)
         viewModel = ViewModelProvider(this,viewModelFactory).get(MainViewModel::class.java)
         viewModel.getPost()
 
