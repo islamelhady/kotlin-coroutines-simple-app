@@ -5,56 +5,91 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elhady.kotlin.R
+import com.elhady.kotlin.data.api.ApiHelper
+import com.elhady.kotlin.data.api.RetrofitBuilder
+import com.elhady.kotlin.data.model.Post
+import com.elhady.kotlin.ui.base.ViewModelFactory
+import com.elhady.kotlin.ui.main.adapter.MainAdapter
+import com.elhady.kotlin.ui.main.viewmodel.MainViewModel
+import com.elhady.kotlin.util.Status.SUCCESS
+import com.elhady.kotlin.util.Status.ERROR
+import com.elhady.kotlin.util.Status.LOADING
+import kotlinx.android.synthetic.main.fragment_post_list.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [PostListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PostListFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+
+    private lateinit var viewModel: MainViewModel
+    private lateinit var adapter: MainAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_post_list, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PostListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PostListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupViewModel()
+        setupObservers()
+        setupUI()
+    }
+
+    private fun setupViewModel() {
+        viewModel = ViewModelProviders.of(
+            this,
+            ViewModelFactory(ApiHelper(RetrofitBuilder.apiService))
+        ).get(MainViewModel::class.java)
+    }
+
+    private fun setupObservers() {
+        viewModel.getPosts().observe(viewLifecycleOwner, Observer {
+            it?.let { resource ->
+                when (resource.status) {
+                    SUCCESS -> {
+                        recyclerView.visibility = View.VISIBLE
+                        progressBar.visibility = View.GONE
+                        resource.data?.let { users -> retrieveList(users) }
+                    }
+                    ERROR -> {
+                        recyclerView.visibility = View.VISIBLE
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(activity, it.message, Toast.LENGTH_LONG).show()
+                    }
+                    LOADING -> {
+                        progressBar.visibility = View.VISIBLE
+                        recyclerView.visibility = View.GONE
+                    }
                 }
             }
+        })
+    }
+
+    private fun setupUI() {
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        adapter = MainAdapter(arrayListOf())
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                recyclerView.context,
+                (recyclerView.layoutManager as LinearLayoutManager).orientation
+            )
+        )
+        recyclerView.adapter = adapter
+    }
+
+    private fun retrieveList(posts: List<Post>) {
+        adapter.apply {
+            addUsers(posts)
+            notifyDataSetChanged()
+        }
     }
 }
