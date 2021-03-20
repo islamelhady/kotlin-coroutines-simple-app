@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.item_layout.view.*
 
 class MainAdapter(
     private val posts: ArrayList<Post>,
-    val onClickListener: OnPostItemClickListener
+    private val onClickListener: OnPostItemClickListener
 ) :
     RecyclerView.Adapter<MainAdapter.PostViewHolder>() {
 

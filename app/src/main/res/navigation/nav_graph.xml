@@ -10,21 +10,21 @@
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
-            android:id="@+id/action_splashFragment_to_postListFragment"
+            android:id="@+id/action_splashFragment_to_postListFragment2"
             app:destination="@id/postListFragment" />
     </fragment>
     <fragment
         android:id="@+id/postListFragment"
         android:name="com.elhady.kotlin.ui.main.view.posts.PostListFragment"
-        android:label="fragment_post_list"
-        tools:layout="@layout/fragment_post_list" >
+        android:label="PostListFragment"
+        tools:layout="@layout/fragment_post_list">
         <action
-            android:id="@+id/action_postListFragment_to_postDetailsFragment"
+            android:id="@+id/action_postListFragment_to_postDetailsFragment2"
             app:destination="@id/postDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/postDetailsFragment"
         android:name="com.elhady.kotlin.ui.main.view.details.PostDetailsFragment"
-        android:label="fragment_post_details"
-        tools:layout="@layout/fragment_post_details" />
+        android:label="PostDetailsFragment"
+        tools:layout="@layout/fragment_post_details"/>
 </navigation>

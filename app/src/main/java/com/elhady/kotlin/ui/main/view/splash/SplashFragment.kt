@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.elhady.kotlin.R
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.android.synthetic.main.fragment_splash.*
 
 
 class SplashFragment : Fragment() {
@@ -24,11 +22,8 @@ class SplashFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        GlobalScope.launch {
-            delay(3000L)
-            findNavController().navigate(
-                R.id.postListFragment
-            )
+        button.setOnClickListener {
+            findNavController().navigate(R.id.postListFragment)
         }
     }
 }
