@@ -8,16 +8,22 @@ import com.elhady.kotlin.R
 import com.elhady.kotlin.data.model.Post
 import kotlinx.android.synthetic.main.item_layout.view.*
 
-class MainAdapter(private val posts: ArrayList<Post>) :
+class MainAdapter(
+    private val posts: ArrayList<Post>,
+    val onClickListener: OnPostItemClickListener
+) :
     RecyclerView.Adapter<MainAdapter.PostViewHolder>() {
 
     class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(posts: Post) {
+        fun bind(posts: Post, action: OnPostItemClickListener) {
             itemView.apply {
                 textViewTitle.text = posts.title
                 textViewBody.text = posts.body
                 userId.text = posts.userId.toString()
+            }
+            itemView.setOnClickListener {
+                action.onItemClick(posts, adapterPosition)
             }
         }
     }
@@ -28,7 +34,7 @@ class MainAdapter(private val posts: ArrayList<Post>) :
         )
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        holder.bind(posts[position])
+        holder.bind(posts[position], onClickListener)
     }
 
     override fun getItemCount(): Int = posts.size
@@ -39,5 +45,9 @@ class MainAdapter(private val posts: ArrayList<Post>) :
             clear()
             addAll(posts)
         }
+    }
+
+    interface OnPostItemClickListener {
+        fun onItemClick(posts: Post, position: Int)
     }
 }

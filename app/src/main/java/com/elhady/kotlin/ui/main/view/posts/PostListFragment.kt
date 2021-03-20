@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elhady.kotlin.R
@@ -17,13 +18,14 @@ import com.elhady.kotlin.data.model.Post
 import com.elhady.kotlin.ui.base.ViewModelFactory
 import com.elhady.kotlin.ui.main.adapter.MainAdapter
 import com.elhady.kotlin.ui.main.viewmodel.MainViewModel
+import com.elhady.kotlin.ui.main.viewmodel.MainViewModel.Companion.createArguments
 import com.elhady.kotlin.util.Status.SUCCESS
 import com.elhady.kotlin.util.Status.ERROR
 import com.elhady.kotlin.util.Status.LOADING
 import kotlinx.android.synthetic.main.fragment_post_list.*
 
 
-class PostListFragment : Fragment() {
+class PostListFragment : Fragment() , MainAdapter.OnPostItemClickListener {
 
 
     private lateinit var viewModel: MainViewModel
@@ -58,7 +60,7 @@ class PostListFragment : Fragment() {
                     SUCCESS -> {
                         recyclerView.visibility = View.VISIBLE
                         progressBar.visibility = View.GONE
-                        resource.data?.let { users -> retrieveList(users) }
+                        resource.data?.let { posts -> retrieveList(posts) }
                     }
                     ERROR -> {
                         recyclerView.visibility = View.VISIBLE
@@ -76,7 +78,7 @@ class PostListFragment : Fragment() {
 
     private fun setupUI() {
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        adapter = MainAdapter(arrayListOf())
+        adapter = MainAdapter(arrayListOf(),this)
         recyclerView.addItemDecoration(
             DividerItemDecoration(
                 recyclerView.context,
@@ -91,5 +93,10 @@ class PostListFragment : Fragment() {
             addUsers(posts)
             notifyDataSetChanged()
         }
+    }
+
+    override fun onItemClick(posts: Post, position: Int) {
+        Toast.makeText(activity, posts.title, Toast.LENGTH_LONG).show()
+        findNavController().navigate(R.id.postDetailsFragment,createArguments(posts))
     }
 }
